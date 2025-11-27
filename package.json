@@ -1,0 +1,23 @@
+{
+  "name": "securityapp_taskmanager",
+  "version": "1.0.0",
+  "description": "Task manager app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Danielggz/SecurityApp_TaskManager.git"
+  },
+  "author": "Danielggz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Danielggz/SecurityApp_TaskManager/issues"
+  },
+  "homepage": "https://github.com/Danielggz/SecurityApp_TaskManager#readme",
+  "dependencies": {
+    "express": "^5.1.0",
+    "sqlite3": "^5.1.7"
+  }
+}
