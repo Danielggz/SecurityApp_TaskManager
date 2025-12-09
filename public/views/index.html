@@ -9,8 +9,9 @@
 <body>
     <div class="container">
         <h1>Task Manager</h1>
-        <div id="currentUser">
-
+        <div>
+            Hello, <span id="currentUser"></span>
+            <button id="btnLogout" class='btn btn-secondary'>Log off</button>
         </div>
 
         <div id="divTasks">
@@ -51,12 +52,57 @@
                     <label class="form-label" for="formCompleted"><b>Completed</b></label>
                     <input class="form-check-input" type="checkbox" id="formCompleted">
                 </div>
-                <button class="btn btn-primary" type="submit">Login</button>
+                <button class="btn btn-primary" type="submit">Submit</button>
             </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="modal fade" id="modalEditTask" tabindex="-1" role="dialog" aria-labelledby="modalEditTask" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Edit Task</h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form class="form" id="formEditTask">
+                <div>
+                    <label class="form-label" for="formEditId"><b>Task Id</b></label>
+                    <input class="form-control" id="formEditId" type="text" name="id" disabled>
+                </div>
+                <div>
+                    <label class="form-label" for="formEditName"><b>Task title</b></label>
+                    <input class="form-control" id="formEditName" type="text" name="name" required>
+                </div>
+                <div>
+                    <label class="form-label" for="formEditDescription"><b>Description</b></label>
+                    <input class="form-control" id="formEditDescription" type="text" name="description" required>
+                </div>
+                <div>
+                    <label class="form-label" for="formEditPriority"><b>Priority</b></label>
+                    <select id="formEditPriority" class="form-select" aria-label="Default select example">
+                        <option value="">Select Priority</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label" for="formCompleted"><b>Completed</b></label>
+                    <input class="form-check-input" type="checkbox" id="formCompleted">
+                </div>
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
         </div>
     </div>

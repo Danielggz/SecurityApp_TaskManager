@@ -101,9 +101,8 @@ app.put('/tasks/:id', (req, res) => {
   var priority = req.body.priority;
   var completed = req.body.completed;
 
-  var stmt = "UPDATE tasks SET name = " + name + ", description = " + description + ", priority = " + priority + ",completed = " + completed + " WHERE id = " + idTask;
+  var stmt = "UPDATE tasks SET name = '" + name + "', description = '" + description + "', priority = " + priority + ",completed = " + completed + " WHERE id = " + idTask;
 
-  console.log(stmt);
   db.run(
     stmt,
     function (err) {
@@ -120,7 +119,8 @@ app.put('/tasks/:id', (req, res) => {
 
 // DELETE - Remove a task
 app.delete('/tasks/:id', (req, res) => {
-  db.run(`DELETE FROM tasks WHERE id = ?`, [req.params.id], function (err) {
+  db.run("DELETE FROM tasks WHERE id = " + req.params.id, 
+    function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
     }
@@ -132,6 +132,10 @@ app.delete('/tasks/:id', (req, res) => {
 });
 
 app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
+app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, "views/login.html"));
 });
 
@@ -142,6 +146,17 @@ app.get('/index', (req, res) => {
 //Get current session
 app.get('/getSession', (req, res) => {
   res.json({userId: req.session.user.userId, username: req.session.user.username, role: req.session.user.role});
+});
+
+//Log off session
+app.get('/logout', (req, res) => {
+  // Destroy the session
+  req.session.destroy(err => {
+    if (err) {
+      return res.status(500).json({ error: "Failed to log out" });
+    }
+    res.status(200).json({ message: "Logged out successfully" });
+  });
 });
 
 app.listen(process.env.PORT || 3000,function(req,res){
