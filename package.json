@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Danielggz/SecurityApp_TaskManager#readme",
   "dependencies": {
+    "body-parser": "^2.2.1",
     "express": "^5.1.0",
     "sqlite3": "^5.1.7"
   }
