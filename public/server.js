@@ -70,7 +70,8 @@ app.post('/login', (req, res) => {
       [email,password], 
       function(err, user){
         if(err){
-          return res.status(500).json({ error: err.message });
+          console.log(err.message);
+          return res.status(500).json({ error: 'Connection Error' });
         }
         if (!user) {
           return res.status(404).json({ message: 'User not found' });
@@ -100,7 +101,7 @@ app.post('/tasks', (req, res) => {
     [idUser, name, description, priority, completed],
     function (err) {
       if (err) {
-        return res.status(500).json({ error: err.message });
+        return res.status(500).json({ error: "Error in connection" });
       }
       res.status(201).json({ id: this.lastID, idUser, name, description, priority, completed });
     }
@@ -116,7 +117,7 @@ app.get('/tasks', (req, res) => {
 
   db.all(`SELECT * FROM tasks`, [], (err, rows) => {
     if (err){
-      return res.status(500).json({ error: err.message });
+      return res.status(500).json({ error: "Error in connection" });
     } 
     //Show for each task if it can be edited by user
     var tasks = rows.map(task => {
@@ -141,7 +142,7 @@ app.get('/tasks', (req, res) => {
 // READ - Get a single task by ID
 app.get('/tasks/:id', (req, res) => {
   db.get(`SELECT * FROM tasks WHERE id = ?`, [req.params.id], (err, row) => {
-    if (err) return res.status(500).json({ error: err.message });
+    if (err) return res.status(500).json({ error: "Error connecting to database" });
     if (!row) return res.status(404).json({ message: 'Task not found' });
     res.json(row);
   });
