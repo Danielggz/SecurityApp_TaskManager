@@ -25,4 +25,10 @@ The application runs on node.js with Express.js as the main library. The databas
 - express-session
 - helmet
 
-When all those libraries are installed, both the insecure and secure applications should run with no problems. The port used is 3000, so that will have to be free. 
+When all those libraries are installed, both the insecure and secure applications should run with no problems. The port used is 3000, so that will have to be free.
+
+The users and passwords for accessing the application are as follows:
+admin@fakemail.com : Abc123.
+user@fakemail.com: Abc123.
+guest@fakemail.com: Abc123.
+
