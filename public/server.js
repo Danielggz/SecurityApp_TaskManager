@@ -89,10 +89,10 @@ app.post('/tasks', (req, res) => {
 
   //Get id from session
   var idUser = req.session.user.userId;
-  var name = req.params.name;
-  var description = req.params.description;
-  var priority = req.params.priority;
-  var completed = req.params.completed;
+  var name = req.body.name;
+  var description = req.body.description;
+  var priority = req.body.priority;
+  var completed = req.body.completed;
 
   var stmt = "INSERT INTO tasks (iduser, name, description, priority, completed) VALUES (?, ?, ?, ?, ?)";
 
@@ -152,11 +152,11 @@ app.get('/tasks/:id', (req, res) => {
 app.put('/tasks/:id', (req, res) => {
 
   //Get id from session
-  var idTask = req.params.id;
-  var name = req.params.name;
-  var description = req.params.description;
-  var priority = req.params.priority;
-  var completed = req.params.completed;
+  var idTask = req.body.id;
+  var name = req.body.name;
+  var description = req.body.description;
+  var priority = req.body.priority;
+  var completed = req.body.completed;
 
   var stmt = "UPDATE tasks SET name = ?, description = ?, priority = ?,completed = ? WHERE id = ?";
 
@@ -177,11 +177,12 @@ app.put('/tasks/:id', (req, res) => {
 
 // DELETE - Remove a task
 app.delete('/tasks/:id', (req, res) => {
+  console.log(req.params.id);
   db.run("DELETE FROM tasks WHERE id = ?",
     [req.params.id], 
     function (err) {
     if (err) {
-      return res.status(500).json({ error: err.message });
+      return res.status(500).json({ message: 'Error connecting to database' });
     }
     if (this.changes === 0) {
       return res.status(404).json({ message: 'Task not found' });

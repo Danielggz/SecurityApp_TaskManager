@@ -49,7 +49,6 @@ $(document).ready(function(){
             dataType:'json',
             success : function(data) {   
                 $("#modalNewTask").modal("hide");
-                getTasks();
             },
             error : function(request,error)
             {
@@ -135,7 +134,6 @@ function getTasks(){
                     dataType: 'json',
                     success: function(data) {
                         $("#modalEditTask").modal("hide");
-                        getTasks();
                     },
                     error: function(err) {
                         console.error(err);
