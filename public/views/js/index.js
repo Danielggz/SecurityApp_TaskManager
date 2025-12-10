@@ -1,4 +1,3 @@
-var userId;
 var username;
 var role;
 
@@ -11,8 +10,7 @@ $(document).ready(function(){
         success : function(data) {   
             username = data.username;
             role = data.role;
-            userId = data.userId;
-            $("#currentUser").html(data.username);
+            $("#currentUser").text(data.username);
 
             //Append create button depending on role
             if(role == "Admin" || role == "User"){
@@ -81,7 +79,7 @@ function getTasks(){
         url : 'http://localhost:3000/tasks',
         type : 'GET',
         dataType:'json',
-        success : function(tasks) {   
+        success : function(tasks) { 
             tasks.forEach(task => {
                 var taskDiv = $("<div style='margin-top:15px;'>")
                 .addClass("task")
@@ -91,16 +89,13 @@ function getTasks(){
                 .attr("data-task-priority", task.priority)
                 .attr("data-task-completed", task.completed)
 
-                taskDiv.append(`<hr/><span><strong>Name:</strong> ${task.name}</span>`);
-                taskDiv.append(`<br/><br/><span><strong>Description:</strong> ${task.description}</span>`);
-                taskDiv.append(`<br/><br/><span><strong>Priority:</strong> ${task.priority}</span>`);
-                taskDiv.append(`<br/><br/><span><strong>Completed:</strong> ${task.completed ? "Yes" : "No"}</span>`);
+                taskDiv.append("<hr/>").append($("<span>").append($("<strong>").text("Name: ")).append(document.createTextNode(task.name)));
+                taskDiv.append("<br/><br/>").append($("<span>").append($("<strong>").text("Description: ")).append(document.createTextNode(task.description)));
+                taskDiv.append("<br/><br/>").append($("<span>").append($("<strong>").text("Priority: ")).append(document.createTextNode(task.priority)));
+                taskDiv.append("<br/><br/>").append($("<span>").append($("<strong>").text("Completed: ")).append(document.createTextNode(task.completed ? "Yes" : "No")));
 
                 //Check user role to allow edit and deletion
-                if(role == "Admin"){
-                    taskDiv.append("<br/><br/><button class='btnEdit btn btn-success'> Edit </button>");
-                    taskDiv.append("  <button class='btnDelete btn btn-danger'> Delete </button>");
-                }else if(role == "User" && userId == task.iduser){
+                if(task.canEdit){
                     taskDiv.append("<br/><br/><button class='btnEdit btn btn-success'> Edit </button>");
                     taskDiv.append("  <button class='btnDelete btn btn-danger'> Delete </button>");
                 }

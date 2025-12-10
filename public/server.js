@@ -10,6 +10,39 @@ const port = 3000;
 //Use session control
 const session = require('express-session');
 const app = express();
+//Use helmet for secure http headers
+const helmet = require("helmet");
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        defaultSrc: ["'self'"],
+
+        // Allow CSS from jsDelivr (Bootstrap)
+        styleSrc: [
+          "'self'",
+          "https://cdn.jsdelivr.net",
+          "'unsafe-inline'" // Bootstrap requires some inline styles
+        ],
+
+        // Allow scripts from jQuery CDN and jsDelivr (Bootstrap JS)
+        scriptSrc: [
+          "'self'",
+          "https://ajax.googleapis.com",
+          "https://cdn.jsdelivr.net"
+        ],
+
+        // Allow fonts if Bootstrap pulls them in
+        fontSrc: ["'self'", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
+
+        // Allow images and source maps from jsDelivr
+        imgSrc: ["'self'", "data:", "https://cdn.jsdelivr.net"],
+        connectSrc: ["'self'", "https://cdn.jsdelivr.net"]
+      }
+    }
+  })
+);
 
 // Serve static files on public folder
 app.use(express.static('../public'));
@@ -33,7 +66,8 @@ app.post('/login', (req, res) => {
     var email = req.body.email;
     var password = req.body.password;
 
-    db.get("SELECT id, username, role from users WHERE email='" + email + "' AND password='" + password + "'", 
+    db.get("SELECT id, username, role from users WHERE email=? AND password=?",
+      [email,password], 
       function(err, user){
         if(err){
           return res.status(500).json({ error: err.message });
@@ -60,11 +94,11 @@ app.post('/tasks', (req, res) => {
   var completed = req.body.completed;
 
   var stmt;
-  stmt = "INSERT INTO tasks (iduser, name, description, priority, completed) VALUES (" + idUser + ", '" + name + "', '" + description + "', " + priority + ", " + completed + ")";
+  stmt = "INSERT INTO tasks (iduser, name, description, priority, completed) VALUES (?, ?, ?, ?, ?)";
 
-  console.log(stmt);
   db.run(
     stmt,
+    [idUser, name, description, priority, completed],
     function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
@@ -76,9 +110,33 @@ app.post('/tasks', (req, res) => {
 
 // READ - Get all tasks
 app.get('/tasks', (req, res) => {
+
+  //session variables
+  var userId = req.session.user.userId;
+  var role = req.session.user.role;
+
   db.all(`SELECT * FROM tasks`, [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
+    if (err){
+      return res.status(500).json({ error: err.message });
+    } 
+    //Show for each task if it can be edited by user
+    var tasks = rows.map(task => {
+      let canEdit = false;
+      if(role === "Admin" || (role === "User" && task.iduser === userId)){
+        canEdit = true;
+      }
+      return {
+        id: task.id,
+        idUser: task.idUser,
+        name: task.name,
+        description: task.description,
+        priority: task.priority,
+        completed: task.completed,
+        canEdit: canEdit
+      } 
+    });
+
+    res.json(tasks);
   });
 });
 
@@ -101,10 +159,11 @@ app.put('/tasks/:id', (req, res) => {
   var priority = req.body.priority;
   var completed = req.body.completed;
 
-  var stmt = "UPDATE tasks SET name = '" + name + "', description = '" + description + "', priority = " + priority + ",completed = " + completed + " WHERE id = " + idTask;
+  var stmt = "UPDATE tasks SET name = ?, description = ?, priority = ?,completed = ? WHERE id = ?";
 
   db.run(
     stmt,
+    [name, description, priority, completed, idTask],
     function (err) {
       if (err) {
         return res.status(500).json({ error: err.message });
@@ -119,7 +178,8 @@ app.put('/tasks/:id', (req, res) => {
 
 // DELETE - Remove a task
 app.delete('/tasks/:id', (req, res) => {
-  db.run("DELETE FROM tasks WHERE id = " + req.params.id, 
+  db.run("DELETE FROM tasks WHERE id = ?",
+    [req.params.id], 
     function (err) {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -145,7 +205,7 @@ app.get('/index', (req, res) => {
 
 //Get current session
 app.get('/getSession', (req, res) => {
-  res.json({userId: req.session.user.userId, username: req.session.user.username, role: req.session.user.role});
+  res.json({username: req.session.user.username, role: req.session.user.role});
 });
 
 //Log off session
