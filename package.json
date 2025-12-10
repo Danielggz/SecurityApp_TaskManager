@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Danielggz/SecurityApp_TaskManager#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.1",
     "express": "^5.1.0",
     "express-session": "^1.18.2",

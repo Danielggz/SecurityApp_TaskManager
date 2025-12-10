@@ -55,10 +55,10 @@ app.use(urlencodedParser);
 
 //Start session
 app.use(session({
-  secret: 'guest',   // change this to something secure
+  secret: 'secretKey',  
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }    // set secure: true if using HTTPS
+  cookie: { secure: false }
 }));
 
 //LOGIN - validate user details
@@ -88,13 +88,12 @@ app.post('/tasks', (req, res) => {
 
   //Get id from session
   var idUser = req.session.user.userId;
-  var name = req.body.name;
-  var description = req.body.description;
-  var priority = req.body.priority;
-  var completed = req.body.completed;
+  var name = req.params.name;
+  var description = req.params.description;
+  var priority = req.params.priority;
+  var completed = req.params.completed;
 
-  var stmt;
-  stmt = "INSERT INTO tasks (iduser, name, description, priority, completed) VALUES (?, ?, ?, ?, ?)";
+  var stmt = "INSERT INTO tasks (iduser, name, description, priority, completed) VALUES (?, ?, ?, ?, ?)";
 
   db.run(
     stmt,
@@ -127,7 +126,6 @@ app.get('/tasks', (req, res) => {
       }
       return {
         id: task.id,
-        idUser: task.idUser,
         name: task.name,
         description: task.description,
         priority: task.priority,
@@ -153,11 +151,11 @@ app.get('/tasks/:id', (req, res) => {
 app.put('/tasks/:id', (req, res) => {
 
   //Get id from session
-  var idTask = req.body.id;
-  var name = req.body.name;
-  var description = req.body.description;
-  var priority = req.body.priority;
-  var completed = req.body.completed;
+  var idTask = req.params.id;
+  var name = req.params.name;
+  var description = req.params.description;
+  var priority = req.params.priority;
+  var completed = req.params.completed;
 
   var stmt = "UPDATE tasks SET name = ?, description = ?, priority = ?,completed = ? WHERE id = ?";
 
